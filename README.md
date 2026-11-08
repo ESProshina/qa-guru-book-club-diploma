@@ -37,5 +37,6 @@
 ### 4. Jenkins Job
 ![Jenkins](images/img_3.png)
 
+[Тест-план (Manual & Automated)](TEST_PLAN.md)).
 ---
 **Автор:** Елена Прошина (QA Automation Engineer)
