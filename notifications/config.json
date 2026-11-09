@@ -1,4 +1,21 @@
 {
-  "base": {},
-  "telegram": {}
+  "base": {
+    "project": "Book Club Automation",
+    "environment": "Jenkins",
+    "comment": "Отчёт по тестам (UI + API)",
+    "reportLink": "${BUILD_URL}",
+    "language": "ru",
+    "allureFolder": "allure-report",
+    "enableChart": true
+  },
+  "telegram": {
+    "token": "8791910498:AAEWk9hp95ikoqSONqzjhLJ_70lRAP04Rvo",
+    "chat": "1633526083",
+    "replyTo": ""
+  },
+  "proxy": {
+    "type": "socks5",
+    "host": "proxy.qaguru.school",
+    "port": 7777
+  }
 }
