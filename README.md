@@ -41,7 +41,6 @@
 ![Allure E2E](images/img_2.png)
 
 ### 4. Видеозапись теста (Selenoid)
-*(Скриншот встроенного плеера с видеозаписью выполнения теста)*
 ![Allure Video](images/img_video.png)
 
 ### 5. Jenkins Job
