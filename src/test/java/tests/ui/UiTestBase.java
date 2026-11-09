@@ -11,26 +11,42 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.util.Map;
+
 import static com.codeborne.selenide.Selenide.closeWebDriver;
-import static io.restassured.RestAssured.sessionId;
 
 public class UiTestBase extends TestBase {
 
     @BeforeAll
     public static void setUpUi() {
-        Configuration.browser = "chrome";
-        Configuration.browserSize = "1920x1080";
+        Configuration.browser = System.getProperty("browser", "chrome");
+        Configuration.browserSize = System.getProperty("browserSize", "1920x1080");
         Configuration.baseUrl = "https://book-club.qa.guru";
         Configuration.pageLoadTimeout = 60_000;
         Configuration.timeout = 20_000;
 
-                ChromeOptions options = new ChromeOptions();
+        String remote = System.getProperty("remote");
+        if (remote != null && !remote.isEmpty()) {
+            Configuration.remote = remote;
+
+
+            Configuration.browserCapabilities.setCapability("selenoid:options", Map.of(
+                    "enableVNC", true,
+                    "enableVideo", true
+            ));
+        }
+
+
+        ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         Configuration.browserCapabilities = options;
 
-        String remote = System.getProperty("remote", "");
-        if (!remote.isEmpty()) {
-            Configuration.remote = remote;
+
+        if (remote != null && !remote.isEmpty()) {
+            options.setCapability("selenoid:options", Map.of(
+                    "enableVNC", true,
+                    "enableVideo", true
+            ));
         }
     }
 
@@ -44,12 +60,17 @@ public class UiTestBase extends TestBase {
     @AfterEach
     void tearDown() {
         if (WebDriverRunner.hasWebDriverStarted()) {
+
             Attach.screenshotAs("Last screenshot");
             Attach.pageSource();
             Attach.browserConsoleLogs();
-        if (System.getProperty("remote") != null) {
-                Attach.addVideo(sessionId);
+
+
+            String remote = System.getProperty("remote");
+            if (remote != null && !remote.isEmpty()) {
+                Attach.addVideo();
             }
+
             closeWebDriver();
         }
     }
