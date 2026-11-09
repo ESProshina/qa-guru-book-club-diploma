@@ -53,7 +53,6 @@ test {
 
     systemProperties(System.getProperties())
 
-    // Явно пробрасываем ключевые параметры (на случай, если выше не сработает)
     if (System.getProperty("remote")) {
         systemProperty "remote", System.getProperty("remote")
         systemProperty "selenide.remote", System.getProperty("remote")
@@ -65,9 +64,10 @@ test {
         systemProperty "browser", System.getProperty("browser")
     }
 
-
     if (System.getProperty("skipUi") == "true") {
         exclude '**/tests/ui/**'
+
+        systemProperty "selenoid.enableVideo", "true"
     }
 
     systemProperty "allure.results.directory", "build/allure-results"

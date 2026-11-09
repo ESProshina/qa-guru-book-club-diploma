@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import static com.codeborne.selenide.Selenide.closeWebDriver;
+import static io.restassured.RestAssured.sessionId;
 
 public class UiTestBase extends TestBase {
 
@@ -23,8 +24,7 @@ public class UiTestBase extends TestBase {
         Configuration.pageLoadTimeout = 60_000;
         Configuration.timeout = 20_000;
 
-        // ФИКС ДЛЯ SELENOID (те самые WebSocket ошибки)
-        ChromeOptions options = new ChromeOptions();
+                ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         Configuration.browserCapabilities = options;
 
@@ -47,6 +47,9 @@ public class UiTestBase extends TestBase {
             Attach.screenshotAs("Last screenshot");
             Attach.pageSource();
             Attach.browserConsoleLogs();
+        if (System.getProperty("remote") != null) {
+                Attach.addVideo(sessionId);
+            }
             closeWebDriver();
         }
     }
