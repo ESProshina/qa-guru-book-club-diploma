@@ -9,18 +9,18 @@ import models.registration.SuccessfulRegistrationResponseModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import specs.BaseSpec;
 
 import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
-import static specs.registration.RegistrationSpec.registrationResponse400Spec;
 import static tests.TestData.*;
+
 
 @Owner("Elena Black")
 @Epic("Авторизация")
 @Feature("Логин")
 @Story("Вход в систему")
-
-public class RegistrationTests extends guru.qa.bookclub.TestBase {
+public class RegistrationTests extends TestBase {
 
     String username;
     String password;
@@ -43,19 +43,14 @@ public class RegistrationTests extends guru.qa.bookclub.TestBase {
 
         step("Проверка id пользователя", () ->
                 assertThat(registrationResponse.id()).isGreaterThan(0));
-
         step("Проверка username", () ->
                 assertThat(registrationResponse.username()).isEqualTo(username));
-
         step("Проверка пустого firstName", () ->
                 assertThat(registrationResponse.firstName()).isEqualTo(""));
-
         step("Проверка пустого lastName", () ->
                 assertThat(registrationResponse.lastName()).isEqualTo(""));
-
         step("Проверка пустого email", () ->
                 assertThat(registrationResponse.email()).isEqualTo(""));
-
         step("Проверка формата remoteAddr (IP-адрес)", () ->
                 assertThat(registrationResponse.remoteAddr()).matches(REGISTRATION_IP_REGEXP));
     }
@@ -67,7 +62,7 @@ public class RegistrationTests extends guru.qa.bookclub.TestBase {
 
         var response = step(
                 "Отправка POST /users/register/ без пароля",
-                () -> api.users.registerWithSpec(registrationData, registrationResponse400Spec)
+                () -> api.users.registerWithSpec(registrationData, BaseSpec.responseSpec(400))
         );
 
         step("Проверка ошибки для поля password", () ->
@@ -82,7 +77,7 @@ public class RegistrationTests extends guru.qa.bookclub.TestBase {
 
         var response = step(
                 "Отправка POST /users/register/ без логина",
-                () -> api.users.registerWithSpec(registrationData, registrationResponse400Spec)
+                () -> api.users.registerWithSpec(registrationData, BaseSpec.responseSpec(400))
         );
 
         step("Проверка ошибки для поля username", () ->

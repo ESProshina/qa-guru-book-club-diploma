@@ -3,7 +3,7 @@ package tests.ui;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import guru.qa.bookclub.TestBase;
+import tests.TestBase;
 import helpers.Attach;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterEach;

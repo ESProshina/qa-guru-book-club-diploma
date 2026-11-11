@@ -8,18 +8,18 @@ import models.login.LoginBodyModel;
 import models.registration.RegistrationBodyModel;
 import models.reviews.*;
 import org.junit.jupiter.api.*;
+import specs.BaseSpec;
 
 import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
 import static specs.reviews.ReviewsSpec.*;
 import static tests.TestData.*;
 
-
 @Owner("Elena Black")
 @Epic("Отзывы на клубы")
 @Feature("Управление отзывами пользователя")
 @Story("Создание, чтение, обновление и удаление отзывов")
-public class ReviewsCrudTests extends guru.qa.bookclub.TestBase {
+public class ReviewsCrudTests extends TestBase {
 
     private String username;
     private String accessToken;
@@ -194,7 +194,7 @@ public class ReviewsCrudTests extends guru.qa.bookclub.TestBase {
         api.reviews.deleteReview(accessToken, reviewId);
 
         step("Проверка, что отзыв удалён (404)", () -> {
-            var response = api.reviews.getReviewByIdWithSpec(reviewId, reviewNotFoundResponseSpec);
+            var response = api.reviews.getReviewByIdWithSpec(reviewId, BaseSpec.responseSpec(404));
             assertThat(response.path("detail").toString()).isEqualTo(errorBookReview);
         });
     }
@@ -211,7 +211,7 @@ public class ReviewsCrudTests extends guru.qa.bookclub.TestBase {
                 faker.number().numberBetween(1, 500)
         );
 
-        Response response = api.reviews.createReviewWithSpec(accessToken, body, reviewBadRequestResponseSpec);
+        Response response = api.reviews.createReviewWithSpec(accessToken, body, BaseSpec.responseSpec(400));
 
         step("Проверка сообщения об ошибке", () ->
                 assertThat(response.path("assessment[0]").toString()).isEqualTo(errorAssessmentRequired));
@@ -225,7 +225,7 @@ public class ReviewsCrudTests extends guru.qa.bookclub.TestBase {
     public void errorCreateReviewWithoutTokenTest() {
         ReviewBodyModel body = uniqueReviewBody();
 
-        Response response = api.reviews.createReviewWithSpec(null, body, reviewUnauthorizedResponseSpec);
+        Response response = api.reviews.createReviewWithSpec(null, body, BaseSpec.responseSpec(401));
 
         step("Проверка статуса 401", () -> assertThat(response.statusCode()).isEqualTo(401));
     }
@@ -238,7 +238,7 @@ public class ReviewsCrudTests extends guru.qa.bookclub.TestBase {
     public void errorGetReviewByIdTest() {
         int invalidReviewId = 999_999_999;
 
-        Response response = api.reviews.getReviewByIdWithSpec(invalidReviewId, reviewNotFoundResponseSpec);
+        Response response = api.reviews.getReviewByIdWithSpec(invalidReviewId, BaseSpec.responseSpec(404));
 
         step("Проверка текста ошибки", () ->
                 assertThat(response.path("detail").toString()).isEqualTo(errorBookReview));

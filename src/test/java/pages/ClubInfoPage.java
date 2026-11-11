@@ -6,7 +6,6 @@ import io.qameta.allure.Step;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
-import static tests.TestData.EXPECTED_CANT_LEAVE_CLUB_FOR_OWNER_ERROR_MESSAGE;
 
 public class ClubInfoPage {
 
@@ -50,9 +49,9 @@ public class ClubInfoPage {
         return this;
     }
 
-    @Step("Проверка ошибки о невозможности покинуть клуб")
-    public ClubInfoPage checkLeaveClubError() {
-        leaveErrorText.shouldHave(text(EXPECTED_CANT_LEAVE_CLUB_FOR_OWNER_ERROR_MESSAGE));
+    @Step("Проверка ошибки при попытке покинуть клуб: {expectedMessage}")
+    public ClubInfoPage checkLeaveClubError(String expectedMessage) {
+        leaveErrorText.shouldHave(text(expectedMessage));
         return this;
     }
 }

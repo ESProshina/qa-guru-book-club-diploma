@@ -12,18 +12,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import specs.BaseSpec;
 
 import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
-import static specs.clubs.ClubsSpec.*;
 import static tests.TestData.*;
 
 @Owner("Elena Black")
 @Epic("Клубы")
 @Feature("Управление клубами")
 @Story("CRUD операции с клубами")
-
-public class ClubsCrudTests extends guru.qa.bookclub.TestBase {
+public class ClubsCrudTests extends TestBase {
 
     private String accessToken;
     private Integer createdClubId;
@@ -100,7 +99,6 @@ public class ClubsCrudTests extends guru.qa.bookclub.TestBase {
         step("Проверка: description", () -> assertThat(response.description()).isEqualTo(UPDATED_CLUB_DESCRIPTION));
     }
 
-
     @Test
     @DisplayName("Позитивный: Частичное обновление клуба через PATCH (200 OK)")
     public void updateClubPatchTest() {
@@ -133,13 +131,12 @@ public class ClubsCrudTests extends guru.qa.bookclub.TestBase {
         api.clubs.deleteClub(accessToken, id);
 
         step("Проверка: GET по удалённому ID возвращает 404", () -> {
-            var response = api.clubs.getClubByIdWithSpec(id, clubNotFoundResponseSpec);
+            var response = api.clubs.getClubByIdWithSpec(id, BaseSpec.responseSpec(404));
             assertThat(response.statusCode()).isEqualTo(404);
         });
 
         createdClubId = null;
     }
-
 
     @Test
     @DisplayName("Позитивный: Создатель автоматически добавлен в members клуба")
@@ -163,7 +160,7 @@ public class ClubsCrudTests extends guru.qa.bookclub.TestBase {
                         CLUB_PUBLICATION_YEAR, CLUB_DESCRIPTION, CLUB_TELEGRAM_LINK));
         createdClubId = created.id();
 
-        var response = api.clubs.joinClubWithSpec(accessToken, createdClubId, clubBadRequestResponseSpec);
+        var response = api.clubs.joinClubWithSpec(accessToken, createdClubId, BaseSpec.responseSpec(400));
 
         step("Проверка: статус 400", () -> assertThat(response.statusCode()).isEqualTo(400));
     }
@@ -175,7 +172,7 @@ public class ClubsCrudTests extends guru.qa.bookclub.TestBase {
                 CLUB_BOOK_TITLE, CLUB_BOOK_AUTHORS, CLUB_PUBLICATION_YEAR,
                 CLUB_DESCRIPTION, CLUB_TELEGRAM_LINK);
 
-        var response = api.clubs.createClubWithSpec(null, body, clubUnauthorizedResponseSpec);
+        var response = api.clubs.createClubWithSpec(null, body, BaseSpec.responseSpec(401));
 
         step("Проверка: статус 401", () -> assertThat(response.statusCode()).isEqualTo(401));
     }
@@ -187,7 +184,7 @@ public class ClubsCrudTests extends guru.qa.bookclub.TestBase {
                 EMPTY_STRING, CLUB_BOOK_AUTHORS, CLUB_PUBLICATION_YEAR,
                 CLUB_DESCRIPTION, CLUB_TELEGRAM_LINK);
 
-        var response = api.clubs.createClubWithSpec(accessToken, body, clubBadRequestResponseSpec);
+        var response = api.clubs.createClubWithSpec(accessToken, body, BaseSpec.responseSpec(400));
 
         step("Проверка: статус 400", () -> assertThat(response.statusCode()).isEqualTo(400));
     }
@@ -195,7 +192,7 @@ public class ClubsCrudTests extends guru.qa.bookclub.TestBase {
     @Test
     @DisplayName("Негативный: Получение несуществующего клуба (404 Not Found)")
     public void getNonExistentClubTest() {
-        var response = api.clubs.getClubByIdWithSpec(NON_EXISTENT_CLUB_ID, clubNotFoundResponseSpec);
+        var response = api.clubs.getClubByIdWithSpec(NON_EXISTENT_CLUB_ID, BaseSpec.responseSpec(404));
 
         step("Проверка: статус 404", () -> assertThat(response.statusCode()).isEqualTo(404));
     }
@@ -203,7 +200,7 @@ public class ClubsCrudTests extends guru.qa.bookclub.TestBase {
     @Test
     @DisplayName("Негативный: Удаление несуществующего клуба (404 Not Found)")
     public void deleteNonExistentClubTest() {
-        var response = api.clubs.deleteClubWithSpec(accessToken, NON_EXISTENT_CLUB_ID, clubNotFoundResponseSpec);
+        var response = api.clubs.deleteClubWithSpec(accessToken, NON_EXISTENT_CLUB_ID, BaseSpec.responseSpec(404));
 
         step("Проверка: статус 404", () -> assertThat(response.statusCode()).isEqualTo(404));
     }

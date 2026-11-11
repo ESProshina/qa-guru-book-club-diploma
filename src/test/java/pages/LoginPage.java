@@ -7,7 +7,6 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
-import static tests.TestData.*;
 
 public class LoginPage {
 
@@ -44,27 +43,26 @@ public class LoginPage {
     }
 
     @Step("На главной странице отображается кнопка Профиль")
-    public LoginPage checkMainPageHaveProfileButton() {
-        profileBtn.shouldHave(text(EXPECTED_PROFILE_BTN_NAME));
+    public LoginPage checkMainPageHaveProfileButton(String expectedText) {
+        profileBtn.shouldHave(text(expectedText));
         return this;
     }
 
     @Step("На главной странице отображается кнопка Клубы")
-    public LoginPage checkMainPageHaveClubButton() {
-        clubBtn.shouldHave(text(EXPECTED_CLUB_BTN_NAME));
+    public LoginPage checkMainPageHaveClubButton(String expectedText) {
+        clubBtn.shouldHave(text(expectedText));
         return this;
     }
 
     @Step("На главной странице отображается кнопка Создать клуб")
-    public LoginPage checkMainPageHaveCreateClubButton() {
-        createClubBtn.shouldHave(text(EXPECTED_CREATE_CLUB_BTN_NAME));
+    public LoginPage checkMainPageHaveCreateClubButton(String expectedText) {
+        createClubBtn.shouldHave(text(expectedText));
         return this;
     }
 
     @Step("Отображается ошибка авторизации")
-    public LoginPage checkWrongCredentialsError() {
-        wrongCredentialsError.shouldBe(visible)
-                .shouldHave(text(EXPECTED_WRONG_CREDENTIALS_ERROR_MESSAGE));
+    public LoginPage checkWrongCredentialsError(String expectedMessage) {
+        wrongCredentialsError.shouldBe(visible).shouldHave(text(expectedMessage));
         return this;
     }
 }

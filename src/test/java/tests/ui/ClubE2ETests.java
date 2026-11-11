@@ -11,7 +11,11 @@ import models.login.LoginBodyModel;
 import models.login.SuccessfulLoginResponseModel;
 import models.registration.RegistrationBodyModel;
 import models.registration.SuccessfulRegistrationResponseModel;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
+import org.junit.jupiter.api.Test;
 import pages.ClubInfoPage;
 
 import static io.qameta.allure.Allure.step;
@@ -20,7 +24,7 @@ import static tests.TestData.*;
 @Owner("Elena Black")
 @Epic("UI: Клубы")
 @Feature("Просмотр и управление клубом")
-public class ClubE2ETests extends UiTestBase{
+public class ClubE2ETests extends UiTestBase {
 
     ClubInfoPage clubInfoPage = new ClubInfoPage();
 
@@ -51,7 +55,6 @@ public class ClubE2ETests extends UiTestBase{
 
         String accessToken = loginResponse.access();
         String refreshToken = loginResponse.refresh();
-
 
         String localStorageAuthBody = step("Создание JSON авторизации для localStorage", () -> {
             UserLocalStorageModel user = new UserLocalStorageModel(
@@ -95,7 +98,7 @@ public class ClubE2ETests extends UiTestBase{
                         .checkClubInfo()
                         .clickLeaveBtn()
                         .confirmLeaveClub()
-                        .checkLeaveClubError()
+                        .checkLeaveClubError(EXPECTED_CANT_LEAVE_CLUB_FOR_OWNER_ERROR_MESSAGE)
         );
     }
 }

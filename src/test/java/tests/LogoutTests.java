@@ -1,26 +1,21 @@
 package tests;
 
-import io.qameta.allure.Epic;
-import io.qameta.allure.Feature;
-import io.qameta.allure.Owner;
-import io.qameta.allure.Story;
+import io.qameta.allure.*;
 import models.login.LoginBodyModel;
 import models.logout.LogoutBodyModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import specs.BaseSpec;
 
 import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
-import static specs.logout.LogoutSpec.logoutResponse400Spec;
-import static specs.logout.LogoutSpec.logoutResponse401Spec;
 import static tests.TestData.*;
 
 @Owner("Elena Black")
 @Epic("Авторизация")
 @Feature("Логин")
 @Story("Вход в систему")
-
-public class LogoutTests extends guru.qa.bookclub.TestBase {
+public class LogoutTests extends TestBase {
 
     @Test
     @DisplayName("Позитивный: Успешный разлогин с валидным refresh-токеном")
@@ -45,7 +40,7 @@ public class LogoutTests extends guru.qa.bookclub.TestBase {
 
         var response = step(
                 "Отправка POST /auth/logout/ с невалидным токеном",
-                () -> api.auth.logoutWithSpec(logoutBody, logoutResponse401Spec)
+                () -> api.auth.logoutWithSpec(logoutBody, BaseSpec.responseSpec(401))
         );
 
         step("Проверка сообщения об ошибке", () ->
@@ -64,7 +59,7 @@ public class LogoutTests extends guru.qa.bookclub.TestBase {
 
         var response = step(
                 "Отправка POST /auth/logout/ с пустым токеном",
-                () -> api.auth.logoutWithSpec(logoutBody, logoutResponse400Spec)
+                () -> api.auth.logoutWithSpec(logoutBody, BaseSpec.responseSpec(400))
         );
 
         step("Проверка ошибки для поля refresh", () ->

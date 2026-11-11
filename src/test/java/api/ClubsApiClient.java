@@ -7,13 +7,13 @@ import models.clubs.ClubModel;
 import models.clubs.ClubsListResponseModel;
 import models.clubs.CreateClubBodyModel;
 import models.clubs.PatchClubBodyModel;
+import specs.BaseSpec;
 
 import static io.restassured.RestAssured.given;
 import static specs.BaseSpec.baseRequestSpec;
 import static specs.clubs.ClubsSpec.*;
 
 public class ClubsApiClient {
-
 
     @Step("Получение списка клубов GET /clubs/")
     public ClubsListResponseModel getClubs() {
@@ -53,7 +53,7 @@ public class ClubsApiClient {
     @Step("Создание клуба POST /clubs/")
     public ClubModel createClub(String accessToken, CreateClubBodyModel body) {
         return given(baseRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .body(body)
                 .when()
                 .post("/clubs/")
@@ -67,7 +67,7 @@ public class ClubsApiClient {
     public Response createClubWithSpec(String accessToken, CreateClubBodyModel body, ResponseSpecification spec) {
         var request = given(baseRequestSpec).body(body);
         if (accessToken != null && !accessToken.isEmpty()) {
-            request.header("Authorization", "Bearer " + accessToken);
+            request.auth().oauth2(accessToken);
         }
         return request
                 .when()
@@ -81,7 +81,7 @@ public class ClubsApiClient {
     @Step("Полное обновление клуба PUT /clubs/{id}/")
     public ClubModel updateClub(String accessToken, int id, CreateClubBodyModel body) {
         return given(baseRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .pathParam("id", id)
                 .body(body)
                 .when()
@@ -95,7 +95,7 @@ public class ClubsApiClient {
     @Step("Частичное обновление клуба PATCH /clubs/{id}/")
     public ClubModel patchClub(String accessToken, int id, PatchClubBodyModel body) {
         return given(baseRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .pathParam("id", id)
                 .body(body)
                 .when()
@@ -110,7 +110,7 @@ public class ClubsApiClient {
     public Response updateClubWithSpec(String accessToken, int id, CreateClubBodyModel body, ResponseSpecification spec) {
         var request = given(baseRequestSpec).pathParam("id", id).body(body);
         if (accessToken != null && !accessToken.isEmpty()) {
-            request.header("Authorization", "Bearer " + accessToken);
+            request.auth().oauth2(accessToken);
         }
         return request
                 .when()
@@ -125,7 +125,7 @@ public class ClubsApiClient {
     public Response patchClubWithSpec(String accessToken, int id, PatchClubBodyModel body, ResponseSpecification spec) {
         var request = given(baseRequestSpec).pathParam("id", id).body(body);
         if (accessToken != null && !accessToken.isEmpty()) {
-            request.header("Authorization", "Bearer " + accessToken);
+            request.auth().oauth2(accessToken);
         }
         return request
                 .when()
@@ -139,19 +139,19 @@ public class ClubsApiClient {
     @Step("Удаление клуба DELETE /clubs/{id}/")
     public void deleteClub(String accessToken, int id) {
         given(baseRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .pathParam("id", id)
                 .when()
                 .delete("/clubs/{id}/")
                 .then()
-                .spec(clubNoContentResponseSpec);
+                .spec(BaseSpec.responseSpec(204));
     }
 
     @Step("Удаление клуба со спецификацией")
     public Response deleteClubWithSpec(String accessToken, int id, ResponseSpecification spec) {
         var request = given(baseRequestSpec).pathParam("id", id);
         if (accessToken != null && !accessToken.isEmpty()) {
-            request.header("Authorization", "Bearer " + accessToken);
+            request.auth().oauth2(accessToken);
         }
         return request
                 .when()
@@ -162,54 +162,28 @@ public class ClubsApiClient {
                 .response();
     }
 
-    // ==================== MEMBERS ====================
+
 
     @Step("Вступление в клуб POST /clubs/{id}/members/me/")
     public void joinClub(String accessToken, int id) {
         given(baseRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .pathParam("id", id)
                 .when()
                 .post("/clubs/{id}/members/me/")
                 .then()
-                .spec(clubNoContentResponseSpec);
+                .spec(BaseSpec.responseSpec(204));
     }
 
     @Step("Вступление в клуб со спецификацией")
     public Response joinClubWithSpec(String accessToken, int id, ResponseSpecification spec) {
         var request = given(baseRequestSpec).pathParam("id", id);
         if (accessToken != null && !accessToken.isEmpty()) {
-            request.header("Authorization", "Bearer " + accessToken);
+            request.auth().oauth2(accessToken);
         }
         return request
                 .when()
                 .post("/clubs/{id}/members/me/")
-                .then()
-                .spec(spec)
-                .extract()
-                .response();
-    }
-
-    @Step("Выход из клуба DELETE /clubs/{id}/members/me/")
-    public void leaveClub(String accessToken, int id) {
-        given(baseRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
-                .pathParam("id", id)
-                .when()
-                .delete("/clubs/{id}/members/me/")
-                .then()
-                .spec(clubNoContentResponseSpec);
-    }
-
-    @Step("Выход из клуба со спецификацией")
-    public Response leaveClubWithSpec(String accessToken, int id, ResponseSpecification spec) {
-        var request = given(baseRequestSpec).pathParam("id", id);
-        if (accessToken != null && !accessToken.isEmpty()) {
-            request.header("Authorization", "Bearer " + accessToken);
-        }
-        return request
-                .when()
-                .delete("/clubs/{id}/members/me/")
                 .then()
                 .spec(spec)
                 .extract()

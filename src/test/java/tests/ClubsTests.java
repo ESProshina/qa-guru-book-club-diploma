@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Epic("Клубы")
 @Feature("Просмотр клубов")
 @Story("Список клубов и пагинация")
-public class ClubsTests extends guru.qa.bookclub.TestBase {
+public class ClubsTests extends TestBase {
 
     @Test
     @DisplayName("GET /clubs возвращает 200 и валидную структуру")

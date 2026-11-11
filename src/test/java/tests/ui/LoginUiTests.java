@@ -30,19 +30,17 @@ public class LoginUiTests extends UiTestBase {
     @Tags({@Tag("ui"), @Tag("smoke"), @Tag("positive")})
     @Severity(SeverityLevel.CRITICAL)
     public void successfulLoginTest() {
-        // Регистрируем пользователя через API (быстро!)
         RegistrationBodyModel regBody = new RegistrationBodyModel(username, password);
         api.users.register(regBody);
 
-        // Логинимся через UI и проверяем главную
         loginPage
                 .openLoginPage()
                 .setUsername(username)
                 .setPassword(password)
                 .checkMainPageCondition()
-                .checkMainPageHaveProfileButton()
-                .checkMainPageHaveClubButton()
-                .checkMainPageHaveCreateClubButton();
+                .checkMainPageHaveProfileButton(EXPECTED_PROFILE_BTN_NAME)
+                .checkMainPageHaveClubButton(EXPECTED_CLUB_BTN_NAME)
+                .checkMainPageHaveCreateClubButton(EXPECTED_CREATE_CLUB_BTN_NAME);
     }
 
     @Test
@@ -50,15 +48,13 @@ public class LoginUiTests extends UiTestBase {
     @Tags({@Tag("ui"), @Tag("smoke"), @Tag("negative")})
     @Severity(SeverityLevel.NORMAL)
     public void wrongCredentialsLoginTest() {
-        // Регистрируем пользователя через API
         RegistrationBodyModel regBody = new RegistrationBodyModel(username, password);
         api.users.register(regBody);
 
-        // Логинимся через UI с неправильным паролем
         loginPage
                 .openLoginPage()
                 .setUsername(username)
                 .setPassword(wrongPassword)
-                .checkWrongCredentialsError();
+                .checkWrongCredentialsError(EXPECTED_WRONG_CREDENTIALS_ERROR_MESSAGE);
     }
 }

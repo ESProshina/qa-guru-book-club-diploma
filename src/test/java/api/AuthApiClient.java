@@ -7,13 +7,10 @@ import models.login.LoginBodyModel;
 import models.login.SuccessfulLoginResponseModel;
 import models.login.WrongCredentialsLoginResponseModel;
 import models.logout.LogoutBodyModel;
-import models.registration.RegistrationBodyModel;
-import models.registration.SuccessfulRegistrationResponseModel;
 
 import static io.restassured.RestAssured.given;
 import static specs.BaseSpec.baseRequestSpec;
 import static specs.login.LoginSpec.successfulLoginResponseSpec;
-import static specs.login.LoginSpec.wrongCredentialsLoginResponseSpec;
 import static specs.logout.LogoutSpec.successfulLogoutResponseSpec;
 
 public class AuthApiClient {
@@ -61,7 +58,7 @@ public class AuthApiClient {
                 .when()
                 .post("/auth/token/")
                 .then()
-                .spec(wrongCredentialsLoginResponseSpec)
+                .spec(specs.BaseSpec.responseSpec(401)) // <--- ИСПРАВЛЕНО
                 .extract()
                 .as(WrongCredentialsLoginResponseModel.class);
     }

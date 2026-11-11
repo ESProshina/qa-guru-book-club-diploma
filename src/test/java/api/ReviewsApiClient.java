@@ -46,11 +46,10 @@ public class ReviewsApiClient {
                 .response();
     }
 
-
     @Step("Создание ревью POST /clubs/reviews/")
     public ReviewResponseModel createReview(String accessToken, ReviewBodyModel body) {
         return given(baseRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .body(body)
                 .when()
                 .post("/clubs/reviews/")
@@ -61,11 +60,10 @@ public class ReviewsApiClient {
     }
 
     @Step("Создание ревью со спецификацией")
-    public Response createReviewWithSpec(String accessToken, ReviewBodyModel body,
-                                         ResponseSpecification spec) {
+    public Response createReviewWithSpec(String accessToken, ReviewBodyModel body, ResponseSpecification spec) {
         var request = given(baseRequestSpec).body(body);
         if (accessToken != null && !accessToken.isEmpty()) {
-            request.header("Authorization", "Bearer " + accessToken);
+            request.auth().oauth2(accessToken);
         }
         return request
                 .when()
@@ -77,11 +75,10 @@ public class ReviewsApiClient {
     }
 
     @Step("Создание ревью без оценки со спецификацией")
-    public Response createReviewWithSpec(String accessToken, ReviewNotRatingBodyModel body,
-                                         ResponseSpecification spec) {
+    public Response createReviewWithSpec(String accessToken, ReviewNotRatingBodyModel body, ResponseSpecification spec) {
         var request = given(baseRequestSpec).body(body);
         if (accessToken != null && !accessToken.isEmpty()) {
-            request.header("Authorization", "Bearer " + accessToken);
+            request.auth().oauth2(accessToken);
         }
         return request
                 .when()
@@ -92,11 +89,10 @@ public class ReviewsApiClient {
                 .response();
     }
 
-
     @Step("Полное обновление ревью PUT /clubs/reviews/{id}/")
     public ReviewResponseModel updateReview(String accessToken, int id, ReviewBodyModel body) {
         return given(baseRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .pathParam("id", id)
                 .body(body)
                 .when()
@@ -110,7 +106,7 @@ public class ReviewsApiClient {
     @Step("Частичное обновление ревью PATCH /clubs/reviews/{id}/")
     public ReviewResponseModel patchReview(String accessToken, int id, ReviewPatchBodyModel body) {
         return given(baseRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .pathParam("id", id)
                 .body(body)
                 .when()
@@ -122,11 +118,10 @@ public class ReviewsApiClient {
     }
 
     @Step("Обновление ревью (PUT) со спецификацией")
-    public Response updateReviewWithSpec(String accessToken, int id, ReviewBodyModel body,
-                                         ResponseSpecification spec) {
+    public Response updateReviewWithSpec(String accessToken, int id, ReviewBodyModel body, ResponseSpecification spec) {
         var request = given(baseRequestSpec).pathParam("id", id).body(body);
         if (accessToken != null && !accessToken.isEmpty()) {
-            request.header("Authorization", "Bearer " + accessToken);
+            request.auth().oauth2(accessToken);
         }
         return request
                 .when()
@@ -138,11 +133,10 @@ public class ReviewsApiClient {
     }
 
     @Step("Обновление ревью (PATCH) со спецификацией")
-    public Response patchReviewWithSpec(String accessToken, int id, ReviewPatchBodyModel body,
-                                        ResponseSpecification spec) {
+    public Response patchReviewWithSpec(String accessToken, int id, ReviewPatchBodyModel body, ResponseSpecification spec) {
         var request = given(baseRequestSpec).pathParam("id", id).body(body);
         if (accessToken != null && !accessToken.isEmpty()) {
-            request.header("Authorization", "Bearer " + accessToken);
+            request.auth().oauth2(accessToken);
         }
         return request
                 .when()
@@ -153,23 +147,22 @@ public class ReviewsApiClient {
                 .response();
     }
 
-
     @Step("Удаление ревью DELETE /clubs/reviews/{id}/")
     public void deleteReview(String accessToken, int id) {
         given(baseRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .pathParam("id", id)
                 .when()
                 .delete("/clubs/reviews/{id}/")
                 .then()
-                .spec(reviewNoContentResponseSpec);
+                .spec(specs.BaseSpec.responseSpec(204));
     }
 
     @Step("Удаление ревью со спецификацией")
     public Response deleteReviewWithSpec(String accessToken, int id, ResponseSpecification spec) {
         var request = given(baseRequestSpec).pathParam("id", id);
         if (accessToken != null && !accessToken.isEmpty()) {
-            request.header("Authorization", "Bearer " + accessToken);
+            request.auth().oauth2(accessToken);
         }
         return request
                 .when()

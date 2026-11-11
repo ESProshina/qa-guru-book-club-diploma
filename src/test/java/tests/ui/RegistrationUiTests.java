@@ -40,9 +40,9 @@ public class RegistrationUiTests extends UiTestBase {
                 .setPassword(password)
                 .setTheSamePasswordAndConfirm(password)
                 .checkMainPageCondition()
-                .checkMainPageHaveProfileButton()
-                .checkMainPageHaveClubButton()
-                .checkMainPageHaveCreateClubButton();
+                .checkMainPageHaveProfileButton(EXPECTED_PROFILE_BTN_NAME)
+                .checkMainPageHaveClubButton(EXPECTED_CLUB_BTN_NAME)
+                .checkMainPageHaveCreateClubButton(EXPECTED_CREATE_CLUB_BTN_NAME);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class RegistrationUiTests extends UiTestBase {
                 .setUsername(username)
                 .setPassword(password)
                 .setNotTheSamePasswordAndConfirm(wrongPassword)
-                .checkMismatchPasswordError();
+                .checkMismatchPasswordError(EXPECTED_MISMATCH_PASSWORD_ERROR_MESSAGE);
     }
 
     @Test
@@ -71,6 +71,6 @@ public class RegistrationUiTests extends UiTestBase {
                 .setUsername(regBody.username())
                 .setPassword(regBody.password())
                 .setTheSamePasswordAndConfirm(regBody.password())
-                .checkSameCredentialsError();
+                .checkSameCredentialsError(EXPECTED_SAME_CREDENTIALS_ERROR_MESSAGE);
     }
 }

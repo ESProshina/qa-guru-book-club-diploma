@@ -42,7 +42,7 @@ public class UsersApiClient {
     @Step("Обновление данных пользователя")
     public UserResponseModel updateUser(String accessToken, UpdateUserBodyModel updateData) {
         return given(baseRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .body(updateData)
                 .when()
                 .patch("/users/me/")
@@ -54,14 +54,10 @@ public class UsersApiClient {
 
     @Step("Обновление данных пользователя со спецификацией")
     public Response updateUserWithSpec(String accessToken, UpdateUserBodyModel updateData, ResponseSpecification spec) {
-        var request = given(baseRequestSpec)
-                .body(updateData);
-
-        // Добавляем заголовок только если токен не null и не пустой
+        var request = given(baseRequestSpec).body(updateData);
         if (accessToken != null && !accessToken.isEmpty()) {
-            request.header("Authorization", "Bearer " + accessToken);
+            request.auth().oauth2(accessToken);
         }
-
         return request
                 .when()
                 .patch("/users/me/")
@@ -74,7 +70,7 @@ public class UsersApiClient {
     @Step("Получение текущего пользователя")
     public UserResponseModel getCurrentUser(String accessToken) {
         return given(baseRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .when()
                 .get("/users/me/")
                 .then()

@@ -1,28 +1,23 @@
 package tests;
 
-import io.qameta.allure.Epic;
-import io.qameta.allure.Feature;
-import io.qameta.allure.Owner;
-import io.qameta.allure.Story;
+import io.qameta.allure.*;
 import models.login.LoginBodyModel;
 import models.user.UpdateUserBodyModel;
 import models.user.UserResponseModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import specs.BaseSpec;
 
 import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
-import static specs.user.UserSpec.userResponse400Spec;
-import static specs.user.UserSpec.userResponse401Spec;
 import static tests.TestData.*;
 
 @Owner("Elena Black")
 @Epic("Пользователь")
 @Feature("Обновление профиля")
 @Story("Обновление данных пользователя")
-
-public class UpdateUserTests extends guru.qa.bookclub.TestBase {
+public class UpdateUserTests extends TestBase {
 
     private String accessToken;
 
@@ -52,10 +47,8 @@ public class UpdateUserTests extends guru.qa.bookclub.TestBase {
 
         step("Проверка поля firstName", () ->
                 assertThat(response.firstName()).isEqualTo(UPDATED_FIRST_NAME));
-
         step("Проверка поля lastName", () ->
                 assertThat(response.lastName()).isEqualTo(UPDATED_LAST_NAME));
-
         step("Проверка поля email", () ->
                 assertThat(response.email()).isEqualTo(uniqueEmail));
     }
@@ -71,12 +64,11 @@ public class UpdateUserTests extends guru.qa.bookclub.TestBase {
 
         var response = step(
                 "Отправка PATCH /users/me/ с невалидным email",
-                () -> api.users.updateUserWithSpec(accessToken, updateData, userResponse400Spec)
+                () -> api.users.updateUserWithSpec(accessToken, updateData, BaseSpec.responseSpec(400))
         );
 
         step("Проверка сообщения об ошибке email", () ->
-                assertThat(response.path("email[0]").toString())
-                        .isEqualTo(INVALID_EMAIL_ERROR));
+                assertThat(response.path("email[0]").toString()).isEqualTo(INVALID_EMAIL_ERROR));
     }
 
     @Test
@@ -90,11 +82,10 @@ public class UpdateUserTests extends guru.qa.bookclub.TestBase {
 
         var response = step(
                 "Отправка PATCH /users/me/ без токена авторизации",
-                () -> api.users.updateUserWithSpec(null, updateData, userResponse401Spec)
+                () -> api.users.updateUserWithSpec(null, updateData, BaseSpec.responseSpec(401))
         );
 
         step("Проверка сообщения об ошибке", () ->
-                assertThat(response.path("detail").toString())
-                        .isEqualTo(UNAUTHORIZED_ERROR));
+                assertThat(response.path("detail").toString()).isEqualTo(UNAUTHORIZED_ERROR));
     }
 }

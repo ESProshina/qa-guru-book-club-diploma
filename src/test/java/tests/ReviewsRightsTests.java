@@ -9,10 +9,10 @@ import models.reviews.ReviewBodyModel;
 import models.reviews.ReviewPatchBodyModel;
 import models.reviews.ReviewResponseModel;
 import org.junit.jupiter.api.*;
+import specs.BaseSpec;
 
 import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
-import static specs.reviews.ReviewsSpec.*;
 import static tests.TestData.errorPermission;
 import static tests.TestData.passwordDef;
 
@@ -20,7 +20,7 @@ import static tests.TestData.passwordDef;
 @Epic("Отзывы на клубы")
 @Feature("Права доступа к отзывам")
 @Story("Только автор может изменять и удалять свой отзыв")
-public class ReviewsRightsTests extends guru.qa.bookclub.TestBase {
+public class ReviewsRightsTests extends TestBase {
 
     private String ownerToken;
     private String ownerUsername;
@@ -34,10 +34,10 @@ public class ReviewsRightsTests extends guru.qa.bookclub.TestBase {
         ownerUsername = faker.name().username() + "_owner_" + System.currentTimeMillis();
         foreignUsername = faker.name().username() + "_foreign_" + System.currentTimeMillis();
 
-         api.users.register(new RegistrationBodyModel(ownerUsername, passwordDef));
+        api.users.register(new RegistrationBodyModel(ownerUsername, passwordDef));
         ownerToken = api.auth.login(new LoginBodyModel(ownerUsername, passwordDef)).access();
 
-         ClubModel club = api.clubs.createClub(ownerToken, uniqueClubBody());
+        ClubModel club = api.clubs.createClub(ownerToken, uniqueClubBody());
         clubId = club.id();
         ReviewResponseModel review = api.reviews.createReview(ownerToken, uniqueReviewBody());
         reviewId = review.id();
@@ -88,7 +88,7 @@ public class ReviewsRightsTests extends guru.qa.bookclub.TestBase {
         ReviewBodyModel hacked = new ReviewBodyModel(clubId, "Hacked!", 1, 1);
 
         Response response = step("PUT чужого отзыва", () ->
-                api.reviews.updateReviewWithSpec(foreignToken, reviewId, hacked, reviewForbiddenResponseSpec));
+                api.reviews.updateReviewWithSpec(foreignToken, reviewId, hacked, BaseSpec.responseSpec(403)));
 
         step("Проверка текста ошибки", () ->
                 assertThat(response.path("detail").toString()).isEqualTo(errorPermission));
@@ -112,7 +112,7 @@ public class ReviewsRightsTests extends guru.qa.bookclub.TestBase {
         ReviewPatchBodyModel hacked = new ReviewPatchBodyModel("Hacked!", 1, 1);
 
         Response response = api.reviews.patchReviewWithSpec(
-                foreignToken, reviewId, hacked, reviewForbiddenResponseSpec);
+                foreignToken, reviewId, hacked, BaseSpec.responseSpec(403));
 
         step("Проверка текста ошибки", () ->
                 assertThat(response.path("detail").toString()).isEqualTo(errorPermission));
@@ -126,7 +126,7 @@ public class ReviewsRightsTests extends guru.qa.bookclub.TestBase {
     @Severity(SeverityLevel.CRITICAL)
     public void errorDeleteForeignReviewTest() {
         Response response = step("DELETE чужого отзыва", () ->
-                api.reviews.deleteReviewWithSpec(foreignToken, reviewId, reviewForbiddenResponseSpec));
+                api.reviews.deleteReviewWithSpec(foreignToken, reviewId, BaseSpec.responseSpec(403)));
 
         step("Проверка текста ошибки", () ->
                 assertThat(response.path("detail").toString()).isEqualTo(errorPermission));
@@ -145,7 +145,7 @@ public class ReviewsRightsTests extends guru.qa.bookclub.TestBase {
     @Tags({@Tag("regression"), @Tag("negative")})
     @Severity(SeverityLevel.NORMAL)
     public void errorDeleteReviewWithoutTokenTest() {
-        Response response = api.reviews.deleteReviewWithSpec(null, reviewId, reviewUnauthorizedResponseSpec);
+        Response response = api.reviews.deleteReviewWithSpec(null, reviewId, BaseSpec.responseSpec(401));
 
         step("Проверка статуса 401", () -> assertThat(response.statusCode()).isEqualTo(401));
     }
@@ -158,7 +158,7 @@ public class ReviewsRightsTests extends guru.qa.bookclub.TestBase {
     public void errorUpdateReviewWithoutTokenTest() {
         ReviewBodyModel body = new ReviewBodyModel(clubId, "Test", 5, 100);
 
-        Response response = api.reviews.updateReviewWithSpec(null, reviewId, body, reviewUnauthorizedResponseSpec);
+        Response response = api.reviews.updateReviewWithSpec(null, reviewId, body, BaseSpec.responseSpec(401));
 
         step("Проверка статуса 401", () -> assertThat(response.statusCode()).isEqualTo(401));
     }
@@ -170,7 +170,7 @@ public class ReviewsRightsTests extends guru.qa.bookclub.TestBase {
     @Tags({@Tag("regression"), @Tag("positive")})
     @Severity(SeverityLevel.CRITICAL)
     public void ownerCanDeleteOwnReviewTest() {
-        Response response = api.reviews.deleteReviewWithSpec(ownerToken, reviewId, reviewNoContentResponseSpec);
+        Response response = api.reviews.deleteReviewWithSpec(ownerToken, reviewId, BaseSpec.responseSpec(204));
 
         step("Проверка статуса 204", () -> assertThat(response.statusCode()).isEqualTo(204));
         reviewId = null;

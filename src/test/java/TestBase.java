@@ -1,4 +1,4 @@
-package guru.qa.bookclub;
+package tests;
 
 import api.ApiClient;
 import io.restassured.RestAssured;

@@ -7,7 +7,6 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
-import static tests.TestData.*;
 
 public class RegistrationPage {
 
@@ -58,34 +57,32 @@ public class RegistrationPage {
     }
 
     @Step("На главной отображается кнопка Профиль")
-    public RegistrationPage checkMainPageHaveProfileButton() {
-        profileBtn.shouldHave(text(EXPECTED_PROFILE_BTN_NAME));
+    public RegistrationPage checkMainPageHaveProfileButton(String expectedText) {
+        profileBtn.shouldHave(text(expectedText));
         return this;
     }
 
     @Step("На главной отображается кнопка Клубы")
-    public RegistrationPage checkMainPageHaveClubButton() {
-        clubBtn.shouldHave(text(EXPECTED_CLUB_BTN_NAME));
+    public RegistrationPage checkMainPageHaveClubButton(String expectedText) {
+        clubBtn.shouldHave(text(expectedText));
         return this;
     }
 
     @Step("На главной отображается кнопка Создать клуб")
-    public RegistrationPage checkMainPageHaveCreateClubButton() {
-        createClubBtn.shouldHave(text(EXPECTED_CREATE_CLUB_BTN_NAME));
+    public RegistrationPage checkMainPageHaveCreateClubButton(String expectedText) {
+        createClubBtn.shouldHave(text(expectedText));
         return this;
     }
 
     @Step("Отображается ошибка несовпадения пароля")
-    public RegistrationPage checkMismatchPasswordError() {
-        mismatchPasswordError.shouldBe(visible)
-                .shouldHave(text(EXPECTED_MISMATCH_PASSWORD_ERROR_MESSAGE));
+    public RegistrationPage checkMismatchPasswordError(String expectedMessage) {
+        mismatchPasswordError.shouldBe(visible).shouldHave(text(expectedMessage));
         return this;
     }
 
     @Step("Отображается ошибка существующего пользователя")
-    public RegistrationPage checkSameCredentialsError() {
-        sameCredentialsError.shouldBe(visible)
-                .shouldHave(text(EXPECTED_SAME_CREDENTIALS_ERROR_MESSAGE));
+    public RegistrationPage checkSameCredentialsError(String expectedMessage) {
+        sameCredentialsError.shouldBe(visible).shouldHave(text(expectedMessage));
         return this;
     }
 }
