@@ -7,11 +7,11 @@ import models.login.LoginBodyModel;
 import models.login.SuccessfulLoginResponseModel;
 import models.login.WrongCredentialsLoginResponseModel;
 import models.logout.LogoutBodyModel;
+import specs.BaseSpec;
 
 import static io.restassured.RestAssured.given;
 import static specs.BaseSpec.baseRequestSpec;
 import static specs.login.LoginSpec.successfulLoginResponseSpec;
-import static specs.logout.LogoutSpec.successfulLogoutResponseSpec;
 
 public class AuthApiClient {
 
@@ -58,7 +58,7 @@ public class AuthApiClient {
                 .when()
                 .post("/auth/token/")
                 .then()
-                .spec(specs.BaseSpec.responseSpec(401)) // <--- ИСПРАВЛЕНО
+                .spec(BaseSpec.responseSpec(401)) // <--- ИСПРАВЛЕНО
                 .extract()
                 .as(WrongCredentialsLoginResponseModel.class);
     }
@@ -82,7 +82,7 @@ public class AuthApiClient {
                 .when()
                 .post("/auth/logout/")
                 .then()
-                .spec(successfulLogoutResponseSpec);
+                .spec(BaseSpec.responseSpec(200)); // <--- ИСПРАВЛЕНО
     }
 
     @Step("Выход из системы со спецификацией")

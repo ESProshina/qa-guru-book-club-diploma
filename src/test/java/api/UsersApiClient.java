@@ -7,11 +7,10 @@ import models.registration.RegistrationBodyModel;
 import models.registration.SuccessfulRegistrationResponseModel;
 import models.user.UpdateUserBodyModel;
 import models.user.UserResponseModel;
+import specs.BaseSpec;
 
 import static io.restassured.RestAssured.given;
 import static specs.BaseSpec.baseRequestSpec;
-import static specs.registration.RegistrationSpec.registrationResponse201Spec;
-import static specs.user.UserSpec.userResponse200Spec;
 
 public class UsersApiClient {
 
@@ -22,7 +21,7 @@ public class UsersApiClient {
                 .when()
                 .post("/users/register/")
                 .then()
-                .spec(registrationResponse201Spec)
+                .spec(BaseSpec.responseSpec(201)) // <--- ИСПРАВЛЕНО
                 .extract()
                 .as(SuccessfulRegistrationResponseModel.class);
     }
@@ -47,7 +46,7 @@ public class UsersApiClient {
                 .when()
                 .patch("/users/me/")
                 .then()
-                .spec(userResponse200Spec)
+                .spec(BaseSpec.responseSpec(200)) // <--- ИСПРАВЛЕНО
                 .extract()
                 .as(UserResponseModel.class);
     }
@@ -74,7 +73,7 @@ public class UsersApiClient {
                 .when()
                 .get("/users/me/")
                 .then()
-                .spec(userResponse200Spec)
+                .spec(BaseSpec.responseSpec(200)) // <--- ИСПРАВЛЕНО
                 .extract()
                 .as(UserResponseModel.class);
     }
